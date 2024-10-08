@@ -3,16 +3,16 @@ import pytest
 from src.main import Product, Category
 
 
-def test_product_str():
-    product = Product("Телефон", "Описание", 100.0, 5)
-    assert str(product) == "Телефон, 100.0 руб. Остаток: 5 шт."
-
-
 def test_category_str():
     product_a = Product("Телефон", "Описание", 100.0, 5)
     product_b = Product("Планшет", "Описание", 200.0, 10)
     category = Category("Электроника", "Описание", [product_a, product_b])
     assert str(category) == "Электроника, количество продуктов: 2 шт."
+
+
+def test_product_str():
+    product = Product("Телефон", "Описание", 100.0, 5)
+    assert str(product) == "Телефон, 100.0 руб. Остаток: 5 шт."
 
 
 def test_category_add():
