@@ -43,10 +43,10 @@ class Product:
 
 
 class Category:
-    _total_categories = 0
-    _total_products = 0
+    total_categories = 0
+    total_products = 0
 
-    def __init__(self, name, description, products=None):
+    def __init__(self, name: str, description: str, products=None):
         if products is None:
             products = []
         self.name = name
@@ -55,36 +55,29 @@ class Category:
         self._update_counts()
 
     def _update_counts(self):
-        """Обновляет счетчики категорий и продуктов."""
-        Category._total_categories += 1
-        Category._total_products += len(self._products)
+        Category.total_categories += 1
+        Category.total_products += len(self._products)
 
     @staticmethod
     def get_total_categories():
-        """Возвращает общее количество категорий."""
-        return Category._total_categories
+        return Category.total_categories
 
     @staticmethod
     def get_total_products():
-        """Возвращает общее количество продуктов."""
-        return Category._total_products
+        return Category.total_products
 
-    def add_product(self, product):
-        """Добавляет продукт в категорию."""
+    def add_product(self, product: Product):
         self._products.append(product)
-        Category._total_products += 1
+        Category.total_products += 1
 
     @property
     def products(self):
-        """Возвращает строку с описанием всех продуктов в категории."""
         return "\n".join(str(product) for product in self._products)
 
     def __str__(self):
-        """Представляет категорию в виде строки."""
-        return f"{self.name}, количество продуктов: {Category._total_products} шт."
+        return f"{self.name}, количество продуктов: {Category.total_products} шт."
 
     def __add__(self, other):
-        """Складывает общую стоимость продуктов в категориях."""
         if not isinstance(other, Category):
             raise TypeError("Can only add Category objects")
         total_value = 0
