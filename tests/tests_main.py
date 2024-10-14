@@ -71,4 +71,5 @@ def test_category_str(setup_products):
 
 
 if __name__ == "__main__":
-    pytest.main()
+    pytest.main(["--cov=src", "--cov-report=term-missing"])
+
