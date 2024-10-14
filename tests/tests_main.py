@@ -1,73 +1,59 @@
 import pytest
-
-from src.main import Category, LawnGrass, Product, Smartphone
-
-
-@pytest.fixture
-def setup_products():
-    """Создание объектов продуктов для тестирования."""
-    smartphone1 = Smartphone(
-        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, "High", "S23 Ultra", 256, "Серый"
-    )
-    smartphone2 = Smartphone(
-        "Iphone 15", "512GB, Gray space", 210000.0, 8, "Very High", "15 Pro Max", 512, "Space Gray"
-    )
-    lawn_grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
-    return smartphone1, smartphone2, lawn_grass1
+from src.main import Product, Smartphone, LawnGrass, ProductCategory
 
 
-def test_product_creation():
-    product = Product("Тестер", "Тестовый продукт", 100.0, 10)
-    assert product.name == "Тестер"
+def test_product_initialization():
+    product = Product("Товар", "Описание товара", 100.0, 10)
+    assert product.name == "Товар"
+    assert product.description == "Описание товара"
     assert product.price == 100.0
     assert product.quantity == 10
 
 
-def test_product_str():
-    product = Product("Тестер", "Тестовый продукт", 100.0, 10)
-    expected_str = "Тестер, 100.0 руб. Остаток: 10 шт."
-    assert str(product) == expected_str
+def test_price_setter():
+    product = Product("Товар", "Описание товара", 100.0, 10)
+    product.price = 120.0
+    assert product.price == 120.0
 
 
-def test_product_str_with_setup(setup_products):
-    smartphone1, _, _ = setup_products
-    expected_str = (
-        "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт., "
-        "Эффективность: High, Модель: S23 Ultra, Память: 256, Цвет: Серый"
-    )
-    assert str(smartphone1) == expected_str
+def test_str():
+    product = Product("Товар", "Описание товара", 100.0, 10)
+    assert str(product) == "Товар: 100.00 руб. Остаток: 10 шт."
 
 
-def test_add_products(setup_products):
-    smartphone1, smartphone2, _ = setup_products
-    total_quantity = smartphone1 + smartphone2
-    assert total_quantity == 13  # 5 + 8
+def test_smartphone_initialization():
+    smartphone = Smartphone("iPhone", "Смартфон от Apple", 999.0, 5, 98.2, "13", 256, "Черный")
+    assert smartphone.name == "iPhone"
+    assert smartphone.model == "13"
 
 
-def test_add_different_product_types(setup_products):
-    smartphone1, _, lawn_grass1 = setup_products
-    with pytest.raises(TypeError):
-        _ = smartphone1 + lawn_grass1
+def test_lawn_grass_initialization():
+    grass = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "США", "10 дней", "Зеленый")
+    assert grass.country == "США"
+    assert grass.germination_period == "10 дней"
 
 
-def test_add_product_to_category(setup_products):
-    smartphone1, _, _ = setup_products
-    smartphone_category = Category("Смартфоны", "Смартфоны и аксессуары")
-    smartphone_category.add_product(smartphone1)
-    assert len(smartphone_category.products) == 1
+def test_product_category_initialization():
+    category = ProductCategory("Смартфоны", "Различные смартфоны")
+    assert category.name == "Смартфоны"
+    assert category.description == "Различные смартфоны"
+    assert category.products == []
 
 
-def test_add_invalid_product_to_category():
-    smartphone_category = Category("Смартфоны", "Смартфоны и аксессуары")
-    with pytest.raises(TypeError):
-        smartphone_category.add_product("Не продукт")
+def test_add_product_to_category():
+    category = ProductCategory("Смартфоны", "Различные смартфоны")
+    smartphone = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
+
+    category.add_product(smartphone)
+    assert smartphone in category.products
+    assert category.total_product_count == 5
 
 
-def test_category_str(setup_products):
-    smartphone1, _, _ = setup_products
-    smartphone_category = Category("Смартфоны", "Смартфоны и аксессуары", [smartphone1])
-    expected_str = "Смартфоны, количество продуктов: 1 шт."
-    assert str(smartphone_category) == expected_str
+def test_product_sum_value():
+    smartphone1 = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
+    smartphone2 = Smartphone("iPhone", "Смартфон", 999.0, 3, 98.2, "13", 256, "Черный")
+    total_value = smartphone1.total_value() + smartphone2.total_value()
+    assert total_value == (700.0 * 5) + (999.0 * 3)
 
 
 if __name__ == "__main__":
