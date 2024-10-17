@@ -57,4 +57,5 @@ def test_product_sum_value():
 
 
 if __name__ == "__main__":
-    pytest.main()
+    pytest.main(["--cov=src", "--cov-report=term-missing"])
+
