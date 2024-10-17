@@ -40,6 +40,13 @@ def test_product_category_initialization():
     assert category.products == []
 
 
+def test_product_sum_value():
+    smartphone1 = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
+    smartphone2 = Smartphone("iPhone", "Смартфон", 999.0, 3, 98.2, "13", 256, "Черный")
+    total_value = smartphone1.total_value() + smartphone2.total_value()
+    assert total_value == (700.0 * 5) + (999.0 * 3)
+
+
 def test_add_product_to_category():
     category = ProductCategory("Смартфоны", "Различные смартфоны")
     smartphone = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
@@ -49,13 +56,5 @@ def test_add_product_to_category():
     assert category.total_product_count == 5
 
 
-def test_product_sum_value():
-    smartphone1 = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
-    smartphone2 = Smartphone("iPhone", "Смартфон", 999.0, 3, 98.2, "13", 256, "Черный")
-    total_value = smartphone1.total_value() + smartphone2.total_value()
-    assert total_value == (700.0 * 5) + (999.0 * 3)
-
-
 if __name__ == "__main__":
     pytest.main(["--cov=src", "--cov-report=term-missing"])
-

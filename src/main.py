@@ -9,6 +9,11 @@ class BaseProduct(ABC):
         self._price = price
         self.quantity = quantity
 
+    @property
+    @abstractmethod
+    def price(self):
+        pass
+
     @abstractmethod
     def __str__(self):
         pass
@@ -54,7 +59,11 @@ class Smartphone(Product):
         self.color = color
 
     def __str__(self):
-        return super().__str__() + f", Эффективность: {self.efficiency}, Модель: {self.model}, Память: {self.memory}, Цвет: {self.color}"
+        return (
+            super().__str__() +
+            f", Эффективность: {self.efficiency}, Модель: {self.model}, "
+            f"Память: {self.memory}, Цвет: {self.color}"
+        )
 
 
 class LawnGrass(Product):
@@ -65,7 +74,10 @@ class LawnGrass(Product):
         self.color = color
 
     def __str__(self):
-        return super().__str__() + f", Страна: {self.country}, Период прорастания: {self.germination_period}, Цвет: {self.color}"
+        return (
+            super().__str__() +
+            f", Страна: {self.country}, Период прорастания: {self.germination_period}, Цвет: {self.color}"
+        )
 
 
 class ProductCategory:
@@ -88,25 +100,50 @@ class ProductCategory:
         return f"{self.name}: {self.total_product_count} продуктов"
 
 
-if __name__ == "__main__":  # Исправленное условие
+if __name__ == '__main__':
+    # Создание экземпляров смартфонов
     smartphone1 = Smartphone(
         "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5, "S23 Ultra", 256, "Серый"
     )
-    smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
-    grass1 = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+    smartphone2 = Smartphone(
+        "Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space"
+    )
+    smartphone3 = Smartphone(
+        "Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14, 90.0, "Redmi Note 11", 1024, "Синий"
+    )
 
-    smartphone_category = ProductCategory("Смартфоны", "Высокотехнологичные смартфоны", [smartphone1, smartphone2])
-    grass_category = ProductCategory("Газонная трава", "Различные виды газонной травы", [grass1])
+    # Печать информации о продуктах
+    print("\nИнформация о продуктах:")
+    for item in (smartphone1, smartphone2, smartphone3):
+        print(item)
 
-    print("\nКатегории:")
-    print(smartphone_category)
-    print(grass_category)
+    # Создание категории продуктов
+    category1 = ProductCategory(
+        "Смартфоны",
+        "Смартфоны, как средство не только коммуникации, но и "
+        "получения дополнительных функций для удобства жизни",
+        [smartphone1, smartphone2, smartphone3]
+    )
 
-    try:
-        smartphone_category.add_product("Not a product")
-    except TypeError as e:
-        print(f"Ошибка: {e}")
+    # Печать информации о категории
+    print("\nИнформация о категории:")
+    print(f"Категория: {category1.name}")
+    print(f"Описание: {category1.description}")
+    print(f"Количество продуктов: {len(category1.products)}")
+    print(f"Общее количество товаров: {category1.total_product_count}")
 
-    print("\nСложение товаров:")
-    smartphone_sum = smartphone1.total_value() + smartphone2.total_value()
-    print(f"Стоимость всех смартфонов: {smartphone_sum:.2f}")
+    # Создание другого продукта и добавление его в другую категорию
+    product4 = Product(
+        "55\" QLED 4K", "Фоновая подсветка", 123000.0, 7
+    )
+    category2 = ProductCategory(
+        "Телевизоры",
+        "Современный телевизор, который позволяет наслаждаться просмотром, "
+        "станет вашим другом и помощником",
+        [product4]
+    )
+
+    print(f"\nИнформация о категории: {category2.name}")
+    print(f"Описание: {category2.description}")
+    print(f"Количество продуктов: {len(category2.products)}")
+    print(f"Общее количество товаров: {category2.total_product_count}")
