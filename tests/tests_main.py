@@ -1,4 +1,7 @@
 import unittest
+
+import pytest
+
 from src.main import Product, Category, Smartphone, LawnGrass
 
 
@@ -86,4 +89,4 @@ class TestCategory(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    pytest.main(["--cov=src", "--cov-report=term-missing"])
