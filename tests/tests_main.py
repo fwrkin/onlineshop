@@ -1,60 +1,89 @@
-import pytest
-from src.main import Product, Smartphone, LawnGrass, ProductCategory
+import unittest
+from src.main import Product, Category, Smartphone, LawnGrass
 
 
-def test_product_initialization():
-    product = Product("Товар", "Описание товара", 100.0, 10)
-    assert product.name == "Товар"
-    assert product.description == "Описание товара"
-    assert product.price == 100.0
-    assert product.quantity == 10
+class TestProduct(unittest.TestCase):
+
+    def test_product_creation(self):
+        product = Product("Test Product", "Description", 10.0, 5)
+        self.assertEqual(product.name, "Test Product")
+        self.assertEqual(product.description, "Description")
+        self.assertEqual(product.price, 10.0)
+        self.assertEqual(product.quantity, 5)
+
+    def test_product_creation_with_zero_quantity(self):
+        with self.assertRaises(ValueError):
+            Product("Invalid Product", "Description", 10.0, 0)
+
+    def test_product_price_setter(self):
+        product = Product("Test Product", "Description", 10.0, 5)
+        product.price = 15.0
+        self.assertEqual(product.price, 15.0)
+
+    def test_product_price_setter_with_invalid_value(self):
+        product = Product("Test Product", "Description", 10.0, 5)
+        product.price = -5.0
+        self.assertEqual(product.price, 10.0)
+
+    def test_product_new_product(self):
+        product_info = {"name": "Test Product", "description": "Description", "price": 10.0, "quantity": 5}
+        product = Product.new_product(product_info)
+        self.assertEqual(product.name, "Test Product")
+        self.assertEqual(product.description, "Description")
+        self.assertEqual(product.price, 10.0)
+        self.assertEqual(product.quantity, 5)
+
+    def test_product_add(self):
+        product1 = Product("Product 1", "Description 1", 10.0, 2)
+        product2 = Product("Product 2", "Description 2", 20.0, 3)
+        total_price = product1.add(product2)
+        self.assertEqual(total_price, 80.0)  # (10 * 2) + (20 * 3)
+
+    def test_product_add_with_invalid_type(self):
+        product1 = Product("Product 1", "Description 1", 10.0, 2)
+        with self.assertRaises(TypeError):
+            product1.add("Invalid Object")
 
 
-def test_price_setter():
-    product = Product("Товар", "Описание товара", 100.0, 10)
-    product.price = 120.0
-    assert product.price == 120.0
+class TestSmartphone(unittest.TestCase):
+
+    def test_smartphone_creation(self):
+        smartphone = Smartphone("Test Smartphone", "Description", 500.0, 3, 90.0, "Model X", 128, "Black")
+        self.assertEqual(smartphone.efficiency, 90.0)
+        self.assertEqual(smartphone.model, "Model X")
+        self.assertEqual(smartphone.memory, 128)
+        self.assertEqual(smartphone.color, "Black")
 
 
-def test_str():
-    product = Product("Товар", "Описание товара", 100.0, 10)
-    assert str(product) == "Товар: 100.00 руб. Остаток: 10 шт."
+class TestLawnGrass(unittest.TestCase):
+
+    def test_lawn_grass_creation(self):
+        lawn_grass = LawnGrass("Test Lawn Grass", "Description", 15.0, 10, "USA", "3-5 weeks", "Green")
+        self.assertEqual(lawn_grass.country, "USA")
+        self.assertEqual(lawn_grass.germination_period, "3-5 weeks")
+        self.assertEqual(lawn_grass.color, "Green")
 
 
-def test_smartphone_initialization():
-    smartphone = Smartphone("iPhone", "Смартфон от Apple", 999.0, 5, 98.2, "13", 256, "Черный")
-    assert smartphone.name == "iPhone"
-    assert smartphone.model == "13"
+class TestCategory(unittest.TestCase):
 
+    def test_category_creation(self):
+        products = [Product("Product 1", "Description 1", 10.0, 2), Product("Product 2", "Description 2", 20.0, 3)]
+        category = Category("Test Category", "Description", products)
+        self.assertEqual(category.name, "Test Category")
+        self.assertEqual(category.description, "Description")
+        self.assertEqual(len(category.products), 2)
 
-def test_lawn_grass_initialization():
-    grass = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "США", "10 дней", "Зеленый")
-    assert grass.country == "США"
-    assert grass.germination_period == "10 дней"
+    def test_category_add_product(self):
+        category = Category("Test Category", "Description")
+        product = Product("New Product", "Description", 30.0, 4)
+        category.add_product(product)
+        self.assertEqual(len(category.products), 1)
 
-
-def test_product_category_initialization():
-    category = ProductCategory("Смартфоны", "Различные смартфоны")
-    assert category.name == "Смартфоны"
-    assert category.description == "Различные смартфоны"
-    assert category.products == []
-
-
-def test_product_sum_value():
-    smartphone1 = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
-    smartphone2 = Smartphone("iPhone", "Смартфон", 999.0, 3, 98.2, "13", 256, "Черный")
-    total_value = smartphone1.total_value() + smartphone2.total_value()
-    assert total_value == (700.0 * 5) + (999.0 * 3)
-
-
-def test_add_product_to_category():
-    category = ProductCategory("Смартфоны", "Различные смартфоны")
-    smartphone = Smartphone("Samsung Galaxy", "Смартфон", 700.0, 5, 95.5, "Galaxy", 128, "Синий")
-
-    category.add_product(smartphone)
-    assert smartphone in category.products
-    assert category.total_product_count == 5
+    def test_category_add_invalid_product(self):
+        category = Category("Test Category", "Description")
+        with self.assertRaises(TypeError):
+            category.add_product("Invalid Product")
 
 
 if __name__ == "__main__":
-    pytest.main(["--cov=src", "--cov-report=term-missing"])
+    unittest.main()
